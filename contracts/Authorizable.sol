@@ -179,4 +179,10 @@ contract Authorizable is Ownable {
     return has;
   }
 
+  // helpers callable by other contracts
+
+  function amIAuthorized() public constant returns (bool) {
+    return authorized[msg.sender] > 0;
+  }
+
 }
