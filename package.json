@@ -1,0 +1,10 @@
+{
+  "name": "authorizable",
+  "version": "0.0.1",
+  "description": "authorizable",
+  "dependencies": {},
+  "devDependencies": {
+    "truffle-hdwallet-provider": "0.0.3"
+  },
+  "scripts": {}
+}
