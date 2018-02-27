@@ -25,19 +25,29 @@ uint public CEOLevel = 50;
 
 `Authorizable` offers many modifiers, in order to cover all the simple cases. Extending the contract, you can add more complex modifiers. Here is the list:
 
+`onlyAuthorized` allows any authorized address
+
+`onlyAuthorizedAtLevel(l)` allows only authorized addresses at level `l`
+
+`onlyAuthorizedAtLevels(ll)` allows only authorized addresses at any of levels listed in the array `ll`
+
+`onlyAuthorizedAtLevelMoreThan(l)` allows only authorized addresses at a level bigger than `l`
+ 
+`onlyAuthorizedAtLevelLessThan(l)` allows only authorized addresses at a level smaller than `l`
+
+The followings are the same as above but allow also the owner:
+
 ```
-onlyAuthorized
-onlyAuthorizedAtLevel(l)
-onlyAuthorizedAtLevels(ll)
-onlyAuthorizedAtLevelMoreThan(l)
-onlyAuthorizedAtLevelLessThan(l)
 onlyOwnerOrAuthorized
 onlyOwnerOrAuthorizedAtLevel(l)
 onlyOwnerOrAuthorizedAtLevels(ll)
 onlyOwnerOrAuthorizedAtLevelMoreThan(l)
 onlyOwnerOrAuthorizedAtLevelLessThan(l)
-onlyAuthorizer
 ```
+Finally
+
+`onlyAuthorizer` allows owner and authorized addresses at `level >= authorizerLevel`
+
 
 ### Examples
 
@@ -59,6 +69,32 @@ function some() onlyAuthorizedAtLevels(levels) {
   ...
 }
 ```
+Notice that if you try to do
+```
+function some() onlyAuthorizedAtLevels([3, 6]) {
+  ...
+}
+```
+you will have a compilation error because `[3, 6]` is taken as a `uint2[]` array and is not implicitly convertible to `uint[]`.
+
+### Installation and tests
+
+First off, you need to install globally Truffle and Ganachi-cli
+
+`npm install -g ganachi-cli truffle`
+
+After, you can complete the installation with
+
+`npm install && truffle install`
+
+Finally, you start the test server in one terminal with
+
+`ganachi-cli`
+
+and in another terminal
+
+`truffle test`
+
 
 ### License
 

@@ -1,7 +1,13 @@
 {
   "name": "authorizable",
   "version": "0.0.1",
-  "description": "authorizable",
+  "description": "An authorizable smart contract",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tweedentity/authorizable.git"
+  },
+  "author": "Francesco Sullo <francesco@sullo.co>",
+  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "truffle-hdwallet-provider": "0.0.3"

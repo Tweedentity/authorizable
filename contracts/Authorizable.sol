@@ -23,7 +23,7 @@ import 'zeppelin/ownership/Ownable.sol';
 
   If the owner wants to execute functions which require explicit authorization, it must authorize itself.
   
-  If you need complex level, you can create a function to generate unique roles based on combination of roles.
+  If you need complex level, in the extended contract, you can add a function to generate unique roles based on combination of levels. The possibilities are almost unlimited, since the level is a uint256
 */
 
 contract Authorizable is Ownable {
@@ -168,7 +168,7 @@ contract Authorizable is Ownable {
     }
   }
 
-  function __hasLevel(uint _level, uint[] _levels) internal constant returns (bool) {
+  function __hasLevel(uint _level, uint[] _levels) internal pure returns (bool) {
     bool has = false;
     for (uint i; i < _levels.length; i++) {
       if (_level == _levels[i]) {

@@ -1,9 +1,11 @@
 {
   "name": "authorizable",
   "version": "0.0.1",
-  "description": "Authorizable",
+  "description": "An authorizable smart contract",
   "devDependencies": {},
   "dependencies": {
     "zeppelin": "^1.3.0"
-  }
+  },
+  "author": "Francesco Sullo <francesco@sullo.co>",
+  "license": "MIT"
 }
