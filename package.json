@@ -1,6 +1,6 @@
 {
   "name": "authorizable",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An authorizable smart contract",
   "repository": {
     "type": "git",
@@ -9,10 +9,8 @@
   "author": "Francesco Sullo <francesco@sullo.co>",
   "license": "MIT",
   "dependencies": {},
-  "devDependencies": {
-    "truffle-hdwallet-provider": "0.0.3"
-  },
+  "devDependencies": {},
   "scripts": {
-    "publish": "source ../ifo-ropsten.env && truffle publish"
+    "publish": "source ../../ifo-ropsten.env && truffle publish"
   }
 }
