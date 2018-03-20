@@ -9,10 +9,8 @@
   "author": "Francesco Sullo <francesco@sullo.co>",
   "license": "MIT",
   "dependencies": {},
-  "devDependencies": {
-    "truffle-hdwallet-provider": "0.0.3"
-  },
+  "devDependencies": {},
   "scripts": {
-    "publish": "source ../ifo-ropsten.env && truffle publish"
+    "publish": "source ../../ifo-ropsten.env && truffle publish"
   }
 }
