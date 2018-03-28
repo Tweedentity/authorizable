@@ -40,7 +40,7 @@ contract Authorizable is Ownable {
   uint public maxLevel = 64;
   uint public authorizerLevel = 56;
 
-  function setLevels(uint _maxLevel, uint _authorizerLevel) public onlyOwner {
+  function setLevels(uint _maxLevel, uint _authorizerLevel) external onlyOwner {
     // this must be called before authorizing any address
     require(totalAuthorized == 0);
     require(_maxLevel > 0 && _authorizerLevel > 0);
@@ -117,12 +117,12 @@ contract Authorizable is Ownable {
   // methods
 
   // Allows the current owner and authorized with level >= authorizerLevel to add a new authorized address, or remove it, setting _level to 0
-  function authorize(address _address, uint _level) onlyAuthorizer public {
+  function authorize(address _address, uint _level) onlyAuthorizer external {
     __authorize(_address, _level);
   }
 
   // Allows the current owner to remove all the authorizations.
-  function deAuthorizeAll() onlyOwner public {
+  function deAuthorizeAll() onlyOwner external {
     for (uint i = 0; i < __authorized.length; i++) {
       if (__authorized[i] != address(0)) {
         __authorize(__authorized[i], 0);
@@ -131,7 +131,7 @@ contract Authorizable is Ownable {
   }
 
   // Allows an authorized to de-authorize itself.
-  function deAuthorize() onlyAuthorized public {
+  function deAuthorize() onlyAuthorized external {
     __authorize(msg.sender, 0);
   }
 
@@ -181,7 +181,7 @@ contract Authorizable is Ownable {
 
   // helpers callable by other contracts
 
-  function amIAuthorized() public constant returns (bool) {
+  function amIAuthorized() external constant returns (bool) {
     return authorized[msg.sender] > 0;
   }
 
