@@ -7,7 +7,7 @@ import 'zeppelin/ownership/Ownable.sol';
 // The Authorizable contract provides authorization control functions.
 
 /*
-  The level is a uint <= maxLevel (64 by default)
+  The level is a uint8 <= maxLevel (64 by default)
   
     0 means not authorized
     1..maxLevel means authorized
@@ -183,6 +183,10 @@ contract Authorizable is Ownable {
 
   function amIAuthorized() external constant returns (bool) {
     return authorized[msg.sender] > 0;
+  }
+
+  function getLevelOfAuthorization() external constant returns (uint) {
+    return authorized[msg.sender];
   }
 
 }
