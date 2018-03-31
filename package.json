@@ -9,7 +9,9 @@
   "author": "Francesco Sullo <francesco@sullo.co>",
   "license": "MIT",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "zeppelin-solidity": "^1.8.0"
+  },
   "scripts": {
     "publish": "source ../../ifo-ropsten.env && truffle publish"
   }
