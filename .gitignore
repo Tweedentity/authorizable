@@ -16,5 +16,4 @@ log
 *.lock
 .node-*
 installed_contracts
-package-lock.json
 *.env
