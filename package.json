@@ -1,6 +1,6 @@
 {
   "name": "authorizable",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "description": "An authorizable smart contract",
   "repository": {
     "type": "git",
@@ -11,8 +11,5 @@
   "dependencies": {},
   "devDependencies": {
     "zeppelin-solidity": "^1.8.0"
-  },
-  "scripts": {
-    "publish": "source ../../ifo-ropsten.env && truffle publish"
   }
 }

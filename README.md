@@ -95,6 +95,24 @@ and in another terminal
 
 `truffle test`
 
+### Usage
+
+To user Authorizable in your smart contract, just 
+```
+npm i -D authorizable
+```
+
+In you contract use it like the following example
+```
+pragma solidity ^0.4.18;
+
+
+import 'authorizable/contracts/Authorizable.sol';
+
+contract Contract is Authorizable {
+  // your code here
+}
+```
 
 ### License
 
