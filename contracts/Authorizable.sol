@@ -4,6 +4,7 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 
 // @title Authorizable
+// @author Francesco Sullo <francesco@sullo.co>
 // The Authorizable contract provides authorization control functions.
 
 /*

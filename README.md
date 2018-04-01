@@ -97,12 +97,12 @@ and in another terminal
 
 ### Usage
 
-To user Authorizable in your smart contract, just 
+To use Authorizable in a Truffle project install it 
 ```
 npm i -D authorizable
 ```
 
-In you contract use it like the following example
+and, in you contract, import it like the following example
 ```
 pragma solidity ^0.4.18;
 
@@ -113,6 +113,8 @@ contract Contract is Authorizable {
   // your code here
 }
 ```
+
+Alternatively, save the `Authorizable.sol` contract wherever you need it.
 
 ### License
 
