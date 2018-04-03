@@ -18,7 +18,7 @@ contract AuthorizableMock is Authorizable {
     testVariable = 2;
   }
 
-  function setTestVariable3() onlyAuthorizedAtLevelMoreThan(3) public {
+  function setTestVariable3() onlyAuthorizedAtLevelsBetween(3, 20) public {
     testVariable = 3;
   }
 
@@ -30,11 +30,11 @@ contract AuthorizableMock is Authorizable {
     testVariable = 5;
   }
 
-  function setTestVariable6() onlyOwnerOrAuthorizedAtLevelMoreThan(4) public {
+  function setTestVariable6() onlyOwnerOrAuthorizedAtLevelsBetween(4, maxLevel + 1) public {
     testVariable = 6;
   }
 
-  function setTestVariable7() onlyAuthorizedAtLevelLessThan(6) public {
+  function setTestVariable7() onlyAuthorizedAtLevelsBetween(0, 6) public {
     testVariable = 7;
   }
 
