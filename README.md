@@ -111,7 +111,7 @@ contract Contract is Authorizable {
 }
 ```
 
-Alternatively, save the `Authorizable.sol` contract wherever you need it.
+Alternatively, save the `flattened/Authorizable.sol` contract wherever you need it.
 
 ### License
 
