@@ -69,15 +69,9 @@ contract Authorizable is Ownable {
     _;
   }
 
-  // Throws if called by any account which is not authorized at a minimum required level.
-  modifier onlyAuthorizedAtLevelMoreThan(uint _level) {
-    require(authorized[msg.sender] > _level);
-    _;
-  }
-
-  // Throws if called by any account which has a level of authorization less than a certan maximum.
-  modifier onlyAuthorizedAtLevelLessThan(uint _level) {
-    require(authorized[msg.sender] > 0 && authorized[msg.sender] < _level);
+  // Throws if called by any account which has a level of authorization not in the interval
+  modifier onlyAuthorizedAtLevelsBetween(uint _level1, uint _level2) {
+    require(authorized[msg.sender] > _level1 && authorized[msg.sender] < _level2);
     _;
   }
 
@@ -98,13 +92,8 @@ contract Authorizable is Ownable {
     _;
   }
 
-  modifier onlyOwnerOrAuthorizedAtLevelMoreThan(uint _level) {
-    require(msg.sender == owner || authorized[msg.sender] > _level);
-    _;
-  }
-
-  modifier onlyOwnerOrAuthorizedAtLevelLessThan(uint _level) {
-    require(msg.sender == owner || (authorized[msg.sender] > 0 && authorized[msg.sender] < _level));
+  modifier onlyOwnerOrAuthorizedAtLevelsBetween(uint _level1, uint _level2) {
+    require(msg.sender == owner || (authorized[msg.sender] > _level1 && authorized[msg.sender] < _level2));
     _;
   }
 
