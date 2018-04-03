@@ -31,9 +31,7 @@ uint public CEOLevel = 50;
 
 `onlyAuthorizedAtLevels(ll)` allows only authorized addresses at any of levels listed in the array `ll`
 
-`onlyAuthorizedAtLevelMoreThan(l)` allows only authorized addresses at a level bigger than `l`
- 
-`onlyAuthorizedAtLevelLessThan(l)` allows only authorized addresses at a level smaller than `l`
+`onlyAuthorizedAtLevelBetween(l1, l2)` allows only authorized addresses at level in between the interval
 
 The followings are the same as above but allow also the owner:
 
@@ -41,8 +39,7 @@ The followings are the same as above but allow also the owner:
 onlyOwnerOrAuthorized
 onlyOwnerOrAuthorizedAtLevel(l)
 onlyOwnerOrAuthorizedAtLevels(ll)
-onlyOwnerOrAuthorizedAtLevelMoreThan(l)
-onlyOwnerOrAuthorizedAtLevelLessThan(l)
+onlyOwnerOrAuthorizedAtLevelsBetween(l1, l2)
 ```
 Finally
 
@@ -54,7 +51,7 @@ Finally
 To allow only level >= 10, you can set a function like this
 
 ```
-function some() onlyAuthorizedAtLevelMoreThan(9) {
+function some() onlyAuthorizedAtLevelsBetween(9, maxLevel + 1) {
   ...
 }
 ```
