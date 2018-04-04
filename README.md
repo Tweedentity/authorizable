@@ -39,7 +39,7 @@ The followings are the same as above but allow also the owner:
 onlyOwnerOrAuthorized
 onlyOwnerOrAuthorizedAtLevel(l)
 onlyOwnerOrAuthorizedAtLevels(ll)
-onlyOwnerOrAuthorizedAtLevelsBetween(l1, l2)
+onlyOwnerOrAuthorizedAtLevelsIn(l1, l2)
 ```
 Finally
 
@@ -51,7 +51,7 @@ Finally
 To allow only level >= 10, you can set a function like this
 
 ```
-function some() onlyAuthorizedAtLevelsBetween(9, maxLevel + 1) {
+function some() onlyAuthorizedAtLevelsIn(9, maxLevel + 1) {
   ...
 }
 ```

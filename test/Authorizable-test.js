@@ -73,7 +73,7 @@ contract('Authorizable', accounts => {
     level = await authorizable.authorized(authorizedLevel1)
     assert.equal(level, 1)
     let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 2)
+    assert.equal(_authorized.length, 1)
   })
 
   it('should revert trying to set the default levels again', async () => {
@@ -85,7 +85,7 @@ contract('Authorizable', accounts => {
     let level = await authorizable.authorized(authorizedLevel5)
     assert.equal(level, 5)
     let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 3)
+    assert.equal(_authorized.length, 2)
   })
 
   it('should authorize authorizedLevel114', async () => {
@@ -93,7 +93,7 @@ contract('Authorizable', accounts => {
     let level = await authorizable.authorized(authorizedLevel114)
     assert.equal(level, 114)
     let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 4)
+    assert.equal(_authorized.length, 3)
   })
 
   it('should allow authorizedLevel114 to authorize authorizedLevel64', async () => {
@@ -101,7 +101,7 @@ contract('Authorizable', accounts => {
     let level = await authorizable.authorized(authorizedLevel64)
     assert.equal(level, 64)
     let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 5)
+    assert.equal(_authorized.length, 4)
   })
 
   it('should revert if authorizedLevel64 tries to authorize accounts[5]', async () => {
@@ -137,7 +137,7 @@ contract('Authorizable', accounts => {
     await isRevert(authorizedLevel1, 2)
     await isRevert(authorizedLevel1, 3)
     await isRevert(authorizedLevel1, 5)
-    await isRevert(authorizedLevel1, 6 )
+    await isRevert(authorizedLevel1, 6)
     await isRevert(authorizedLevel1, 8)
     await isRevert(authorizedLevel1, 9)
   })
@@ -181,10 +181,17 @@ contract('Authorizable', accounts => {
     await isRevert(authorizedLevel1, 1)
   })
 
-  it('should allow owner to deAuthorizeAll', async () => {
-    await authorizable.deAuthorizeAll()
+  it('should allow owner to deAuthorizeAll in two steps', async () => {
+    for (let i = 5; i <= 9; i++) {
+      await authorizable.authorize(accounts[i], 16)
+    }
+    await authorizable.deAuthorizeAll({gas: 120000})
     let _authorized = await authorizable.getAuthorizedAddresses()
-    for(let a of _authorized) {
+    assert.equal(_authorized[3], 0)
+    assert.equal(_authorized[4], accounts[7])
+    await authorizable.deAuthorizeAll({gas: 120000})
+    _authorized = await authorizable.getAuthorizedAddresses()
+    for (let a of _authorized) {
       assert.equal(a, 0)
     }
   })
