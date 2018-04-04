@@ -67,7 +67,6 @@ contract('Authorizable', accounts => {
   it('should deauthorize authorizedLevel1 and authorize it again', async () => {
     await authorizable.authorize(authorizedLevel1, 0)
     let level = await authorizable.authorized(authorizedLevel1)
-    console.log(JSON.stringify(level))
     assert.equal(level, 0)
     await authorizable.authorize(authorizedLevel1, 1)
     level = await authorizable.authorized(authorizedLevel1)
@@ -84,6 +83,7 @@ contract('Authorizable', accounts => {
     await authorizable.authorize(authorizedLevel5, 5)
     let level = await authorizable.authorized(authorizedLevel5)
     assert.equal(level, 5)
+
     let _authorized = await authorizable.getAuthorizedAddresses()
     assert.equal(_authorized.length, 2)
   })
@@ -92,6 +92,7 @@ contract('Authorizable', accounts => {
     await authorizable.authorize(authorizedLevel114, 114)
     let level = await authorizable.authorized(authorizedLevel114)
     assert.equal(level, 114)
+
     let _authorized = await authorizable.getAuthorizedAddresses()
     assert.equal(_authorized.length, 3)
   })
@@ -106,6 +107,14 @@ contract('Authorizable', accounts => {
 
   it('should revert if authorizedLevel64 tries to authorize accounts[5]', async () => {
     await assertRevert(authorizable.authorize(accounts[5], 64, {from: authorizedLevel64}))
+  })
+
+  it('should allow authorizedLevel5 to verify that it is authorized', async () => {
+    assert.isTrue(await authorizable.amIAuthorized({from: authorizedLevel5}))
+  })
+
+  it('should allow accounts[6] to verify that it is not authorized', async () => {
+    assert.isFalse(await authorizable.amIAuthorized({from: accounts[6]}))
   })
 
   // owner
