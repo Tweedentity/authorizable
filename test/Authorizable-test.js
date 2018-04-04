@@ -41,7 +41,6 @@ contract('Authorizable', accounts => {
   it('should set the default levels', async () => {
     assert.equal(await authorizable.maxLevel(), 64)
     assert.equal(await authorizable.authorizerLevel(), 56)
-
     await authorizable.setLevels(128, 96)
     assert.equal(await authorizable.maxLevel(), 128)
     assert.equal(await authorizable.authorizerLevel(), 96)
@@ -49,30 +48,23 @@ contract('Authorizable', accounts => {
 
   it('should authorize authorizedLevel1', async () => {
     await authorizable.authorize(authorizedLevel1, 1)
-    let level = await authorizable.authorized(authorizedLevel1)
-    assert.equal(level, 1)
-    let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 1)
+    assert.equal(await authorizable.authorized(authorizedLevel1), 1)
+    assert.equal((await authorizable.getAuthorizedAddresses()).length, 1)
   })
 
   it('should move authorizedLevel1 to level 2 and again to level 1', async () => {
     await authorizable.authorize(authorizedLevel1, 2)
-    let level = await authorizable.authorized(authorizedLevel1)
-    assert.equal(level, 2)
+    assert.equal(await authorizable.authorized(authorizedLevel1), 2)
     await authorizable.authorize(authorizedLevel1, 1)
-    level = await authorizable.authorized(authorizedLevel1)
-    assert.equal(level, 1)
+    assert.equal(await authorizable.authorized(authorizedLevel1), 1)
   })
 
   it('should deauthorize authorizedLevel1 and authorize it again', async () => {
     await authorizable.authorize(authorizedLevel1, 0)
-    let level = await authorizable.authorized(authorizedLevel1)
-    assert.equal(level, 0)
+    assert.equal(await authorizable.authorized(authorizedLevel1), 0)
     await authorizable.authorize(authorizedLevel1, 1)
-    level = await authorizable.authorized(authorizedLevel1)
-    assert.equal(level, 1)
-    let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 1)
+    assert.equal(await authorizable.authorized(authorizedLevel1), 1)
+    assert.equal((await authorizable.getAuthorizedAddresses()).length, 1)
   })
 
   it('should revert trying to set the default levels again', async () => {
@@ -81,28 +73,20 @@ contract('Authorizable', accounts => {
 
   it('should authorize authorizedLevel5', async () => {
     await authorizable.authorize(authorizedLevel5, 5)
-    let level = await authorizable.authorized(authorizedLevel5)
-    assert.equal(level, 5)
-
-    let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 2)
+    assert.equal(await authorizable.authorized(authorizedLevel5), 5)
+    assert.equal((await authorizable.getAuthorizedAddresses()).length, 2)
   })
 
   it('should authorize authorizedLevel114', async () => {
     await authorizable.authorize(authorizedLevel114, 114)
-    let level = await authorizable.authorized(authorizedLevel114)
-    assert.equal(level, 114)
-
-    let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 3)
+    assert.equal(await authorizable.authorized(authorizedLevel114), 114)
+    assert.equal((await authorizable.getAuthorizedAddresses()).length, 3)
   })
 
   it('should allow authorizedLevel114 to authorize authorizedLevel64', async () => {
     await authorizable.authorize(authorizedLevel64, 64, {from: authorizedLevel114})
-    let level = await authorizable.authorized(authorizedLevel64)
-    assert.equal(level, 64)
-    let _authorized = await authorizable.getAuthorizedAddresses()
-    assert.equal(_authorized.length, 4)
+    assert.equal(await authorizable.authorized(authorizedLevel64), 64)
+    assert.equal((await authorizable.getAuthorizedAddresses()).length, 4)
   })
 
   it('should revert if authorizedLevel64 tries to authorize accounts[5]', async () => {
@@ -176,14 +160,12 @@ contract('Authorizable', accounts => {
 
   it('should allow authorizedLevel114 to deAuthorize authorizedLevel64', async () => {
     await authorizable.authorize(authorizedLevel64, 0, {from: authorizedLevel114})
-    let level = await authorizable.authorized(authorizedLevel64)
-    assert.equal(level, 0)
+    assert.equal(await authorizable.authorized(authorizedLevel64), 0)
   })
 
   it('should allow authorizedLevel1 to deAuthorize itself', async () => {
     await authorizable.deAuthorize({from: authorizedLevel1})
-    let level = await authorizable.authorized(authorizedLevel1)
-    assert.equal(level, 0)
+    assert.equal(await authorizable.authorized(authorizedLevel1), 0)
   })
 
   it('should throw if calling setTestVariable1 from authorizedLevel1', async () => {

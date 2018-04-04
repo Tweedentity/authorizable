@@ -1,6 +1,6 @@
 {
   "name": "authorizable",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An authorizable smart contract",
   "repository": {
     "type": "git",
@@ -10,6 +10,10 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
+    "truffle-flattener": "^1.2.5",
     "zeppelin-solidity": "^1.8.0"
+  },
+  "scripts": {
+    "flatten": "truffle-flattener contracts/Authorizable > flattened/Authorizable.sol"
   }
 }

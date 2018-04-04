@@ -6,13 +6,13 @@ This contract allows minimalistic governance.
 
 `Authorizable` allows an unlimited number of levels.
 
-Any authorized address receives an assigned level.
+Any authorized address has an assigned level.
 
-By default, `Authorizable` has `maxLevel = 64` and `authorizerLevel = 56`. The first is the top level accepted. The second is the minimum level requested to an address allowed to authorize other addresses.
+By default, `Authorizable` has `maxLevel = 64` and `authorizerLevel = 56`. The first is the top level accepted. The second is the minimum level requested to an address to be allowed to authorize other addresses.
 
-The function `setLevels` allows to set the variables above, but only when there are no authorized addresses. After than someone has been authorized, the default levels cannot be changed to avoid unfixable errors.
+The function `setLevels` allows to set the variables above, but only when there are no authorized addresses. After than someone has been authorized, the default levels cannot be changed to avoid unfixable errors. To change them, you should call `deAuthorizeAll` and restart :-(
 
-Any role is an `uint`, but you can extend the contract and add helper variable, like, for example:
+Any level is an `uint`, but you can extend the contract and add helper variables, like, for example:
 
 ```
 uint public operatorLevel = 6;
@@ -27,19 +27,19 @@ uint public CEOLevel = 50;
 
 `onlyAuthorized` allows any authorized address
 
-`onlyAuthorizedAtLevel(l)` allows only authorized addresses at level `l`
+`onlyAuthorizedAtLevel(uint _level)` allows only authorized addresses at level `l`
 
-`onlyAuthorizedAtLevels(ll)` allows only authorized addresses at any of levels listed in the array `ll`
+`onlyAuthorizedAtLevels(uint[] _levels)` allows only authorized addresses at any of levels listed in the array `ll`
 
-`onlyAuthorizedAtLevelBetween(l1, l2)` allows only authorized addresses at level in between the interval
+`onlyAuthorizedAtLevelsWithin(uint minLevel, uint maxLevel)` allows only authorized addresses at level in between the interval
 
 The followings are the same as above but allow also the owner:
 
 ```
 onlyOwnerOrAuthorized
-onlyOwnerOrAuthorizedAtLevel(l)
-onlyOwnerOrAuthorizedAtLevels(ll)
-onlyOwnerOrAuthorizedAtLevelsIn(l1, l2)
+onlyOwnerOrAuthorizedAtLevel
+onlyOwnerOrAuthorizedAtLevels
+onlyOwnerOrAuthorizedAtLevelsWithin
 ```
 Finally
 
@@ -51,7 +51,7 @@ Finally
 To allow only level >= 10, you can set a function like this
 
 ```
-function some() onlyAuthorizedAtLevelsIn(9, maxLevel + 1) {
+function some() onlyAuthorizedAtLevelsWithin(10, maxLevel) {
   ...
 }
 ```

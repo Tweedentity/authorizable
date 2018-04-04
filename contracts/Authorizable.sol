@@ -71,7 +71,7 @@ contract Authorizable is Ownable {
    * @param _minLevel Minimum level required
    * @param _maxLevel Maximum level required
    */
-  modifier onlyAuthorizedAtLevelsIn(uint _minLevel, uint _maxLevel) {
+  modifier onlyAuthorizedAtLevelsWithin(uint _minLevel, uint _maxLevel) {
     require(authorized[msg.sender] >= _minLevel && authorized[msg.sender] <= _maxLevel);
     _;
   }
