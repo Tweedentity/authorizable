@@ -14,6 +14,6 @@
     "zeppelin-solidity": "^1.8.0"
   },
   "scripts": {
-    "flatten": "truffle-flattener contracts/Authorizable > flattened/Authorizable.sol"
+    "flatten": "truffle-flattener contracts/Authorizable.sol > flattened/Authorizable.sol"
   }
 }
