@@ -4,10 +4,6 @@ import '../Authorizable.sol';
 
 contract AuthorizableMock is Authorizable {
 
-  function getAuthorizedAddresses() public constant returns (address[]) {
-    return __authorized;
-  }
-
   uint public testVariable = 0;
 
   function setTestVariable1() onlyAuthorized public {
