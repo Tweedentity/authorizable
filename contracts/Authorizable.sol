@@ -210,4 +210,11 @@ contract Authorizable is Ownable {
     return authorized[msg.sender] > 0;
   }
 
+  /**
+   * @dev Allows any authorizer to get the list of the authorized wallets
+   */
+  function getAuthorized() external onlyAuthorizer constant returns(address[]) {
+    return __authorized;
+  }
+
 }

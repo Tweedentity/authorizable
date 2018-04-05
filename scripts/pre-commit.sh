@@ -8,3 +8,4 @@ if [ $? -ne 0 ]; then
 fi
 
 npm run flatten
+git add flattened/Authorizable.sol

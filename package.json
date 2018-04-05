@@ -1,7 +1,7 @@
 {
   "name": "authorizable",
-  "version": "0.1.1",
-  "description": "An authorizable smart contract",
+  "version": "0.1.2",
+  "description": "Smart contract governance made easy",
   "repository": {
     "type": "git",
     "url": "https://github.com/tweedentity/authorizable.git"
