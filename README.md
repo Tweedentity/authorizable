@@ -43,7 +43,7 @@ onlyOwnerOrAuthorizedAtLevelsWithin
 ```
 Finally
 
-`onlyAuthorizer` allows owner and authorized addresses at `level >= authorizerLevel`
+`onlyAuthorizer` allows owner and authorized addresses at `level >= authorizerLevel`. It's equivalent to `onlyOwnerOrAuthorizedAtLevelsWithin(authorizerLevel, maxLevel)`.
 
 
 ### Examples
@@ -112,6 +112,32 @@ contract Contract is Authorizable {
 ```
 
 Alternatively, save the `flattened/Authorizable.sol` contract wherever you need it.
+
+### API
+
+**authorize(address _address, uint _level) onlyAuthorizer**  
+Allows any authorizer (owner and levels >= authorizerLevel) to authorize a wallet at a specific level, or to revocate the authorization if the `_level` is 0.
+
+**authorizeBatch(address[] _addresses, uint _level) onlyAuthorizer**  
+Allows any authorizer to authorize a list of wallets at a specific level (useful, for example, during whitelisting processes).
+
+**deAuthorizeAll() onlyOwner**  
+Allows the owner to revocate authorization to all the authorized wallets. This function has a safety check of the `gasleft()` to avoid going out of gas. If, for example, you are trying to remove all the wallets that where whitelisted to participate in an ICO, you could have 10,000 wallets there. In this case the function would require too much gas and it would it the gas limit resulting in a not-executable function.   
+To avoid this, the function interrupts the process when there is no more gas left, requiring that you call it again and again until you don't reach the wanted result. 
+ 
+**deAuthorizeAllAtLevel(uint _level) onlyAuthorizer**  
+Allows any authorizer to revocate the authorization to any wallet at the specified level.
+
+**deAuthorize() onlyAuthorized**  
+Allows any authorized wallets to revocate its own authorization.
+
+**setLevels(uint _maxLevel, uint _authorizerLevel) onlyOwner**  
+Allows to set the default levels. This can be done only if `totalAuthorized` is equal to zero, to avoid conflicts and unpredictable errors.
+
+**setSelfRevoke(bool _selfRevoke) onlyOwner**  
+Allows to decide if an authorized wallet is able to revoke its own authorization. By default, it is allowed.
+
+
 
 ### License
 

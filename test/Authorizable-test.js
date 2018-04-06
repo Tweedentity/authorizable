@@ -179,6 +179,16 @@ contract('Authorizable', accounts => {
     assert.equal(await authorizable.authorized(authorizedLevel1), 0)
   })
 
+  it('should set selfRevoke to false', async () => {
+    await authorizable.setSelfRevoke(false)
+    assert.isFalse(await authorizable.selfRevoke())
+  })
+
+  it('should revert if authorizedLevel5 tries to deAuthorize itself', async () => {
+    await assertRevert(authorizable.deAuthorize({from: authorizedLevel5}))
+  })
+
+
   it('should revert if calling setTestVariable1 from authorizedLevel1', async () => {
     await isRevert(authorizedLevel1, 1)
   })
