@@ -22,6 +22,8 @@ contract Authorizable is Ownable {
   uint public maxLevel = 64;
   uint public authorizerLevel = 56;
 
+  bool public selfRevoke = true;
+
   /**
    * @dev Set the range of levels accepted by the contract
    * @param _maxLevel The max level acceptable
@@ -35,6 +37,14 @@ contract Authorizable is Ownable {
 
     maxLevel = _maxLevel;
     authorizerLevel = _authorizerLevel;
+  }
+
+  /**
+  * @dev Allows to decide if users will be able to self revoke their level
+  * @param _selfRevoke The new value
+  */
+  function setSelfRevoke(bool _selfRevoke) onlyOwner external {
+    selfRevoke = _selfRevoke;
   }
 
   /**
@@ -161,6 +171,7 @@ contract Authorizable is Ownable {
    * @dev Allows an authorized to de-authorize itself.
    */
   function deAuthorize() onlyAuthorized external {
+    require(selfRevoke == true);
     __authorize(msg.sender, 0);
   }
 
