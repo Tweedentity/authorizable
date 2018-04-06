@@ -21,6 +21,17 @@ contract('Authorizable', accounts => {
     await assertRevert(authorizable['setTestVariable' + number]({from: sender}))
   }
 
+  function totalAuthorized(authorized, expectedAuthorized) {
+    authorized = authorized.valueOf()
+    let count = 0
+    for (let a of authorized) {
+      if (!/^[0x]*$/.test(a)) {
+        count++
+      }
+    }
+    return count == expectedAuthorized
+  }
+
   before(async () => {
     authorizable = await Authorizable.new()
   })
@@ -176,10 +187,19 @@ contract('Authorizable', accounts => {
     await assertRevert(authorizable.getAuthorized({from: authorizedLevel1}))
   })
 
+  it('should authorize accounts 5..9 in batch', async () => {
+    assert.isTrue(totalAuthorized(await authorizable.getAuthorized(), 2))
+    await authorizable.authorizeBatch([accounts[5], accounts[6], accounts[7], accounts[8], accounts[9]], 5)
+    assert.isTrue(totalAuthorized(await authorizable.getAuthorized(), 7))
+  })
+
+  it('should de-authorize all wallets at level 5', async () => {
+    await authorizable.deAuthorizeAllAtLevel(5)
+    assert.isTrue(totalAuthorized(await authorizable.getAuthorized(), 1))
+  })
+
   it('should allow owner to deAuthorizeAll in two steps', async () => {
-    for (let i = 5; i <= 9; i++) {
-      await authorizable.authorize(accounts[i], 16)
-    }
+    await authorizable.authorizeBatch([authorizedLevel5, accounts[5], accounts[6], accounts[7], accounts[8], accounts[9]], 5)
     await authorizable.deAuthorizeAll({gas: 120000})
     let _authorized = await authorizable.getAuthorized()
     assert.equal(_authorized[3], 0)

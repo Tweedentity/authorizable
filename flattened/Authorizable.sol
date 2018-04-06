@@ -151,8 +151,7 @@ contract Authorizable is Ownable {
 
 
   /**
-    * @dev Allows the current owner and authorized with level >= authorizerLevel
-    *      to add a new authorized address, or remove it, setting _level to 0
+    * @dev Allows to add a new authorized address, or remove it, setting _level to 0
     * @param _address The address to be authorized
     * @param _level The level of authorization
     */
@@ -161,14 +160,40 @@ contract Authorizable is Ownable {
   }
 
   /**
-   * @dev Allows the current owner to remove all the authorizations.
-   *      To avoid huge loops going out of gas, we check the gas.
+    * @dev Allows to add a list of new authorized addresses.
+    *      Useful, for example, with whitelists
+    * @param _addresses Array of addresses to be authorized
+    * @param _level The level of authorization
+    */
+  function authorizeBatch(address[] _addresses, uint _level) onlyAuthorizer external {
+    require(_level > 0);
+    for (uint i = 0; i < _addresses.length; i++) {
+      __authorize(_addresses[i], _level);
+    }
+  }
+
+  /**
+   * @dev Allows to remove all the authorizations. Callable by the owner only.
+   *      We check the gas to avoid going out of gas when there are tons of
+   *      authorized addresses (for example when used for a whitelist).
    *      If at the end of the operation there are still authorized
    *      wallets the operation must be repeated.
    */
   function deAuthorizeAll() onlyOwner external {
-    for (uint i = 0; i < __authorized.length && msg.gas > 33e3; i++) {
+    for (uint i = 0; i < __authorized.length && gasleft() > 33e3; i++) {
       if (__authorized[i] != address(0)) {
+        __authorize(__authorized[i], 0);
+      }
+    }
+  }
+
+  /**
+   * @dev Allows to remove all the authorizations at a specific level.
+   * @param _level The level of authorization
+   */
+  function deAuthorizeAllAtLevel(uint _level) onlyAuthorizer external {
+    for (uint i = 0; i < __authorized.length && gasleft() > 33e3; i++) {
+      if (__authorized[i] != address(0) && authorized[__authorized[i]] == _level) {
         __authorize(__authorized[i], 0);
       }
     }
@@ -183,6 +208,7 @@ contract Authorizable is Ownable {
 
   /**
    * @dev Performs the actual authorization/de-authorization
+   *      If there's no change, it doesn't emit any event, to reduce gas usage.
    * @param _address The address to be authorized
    * @param _level The level of authorization. 0 to remove it.
    */
@@ -191,41 +217,41 @@ contract Authorizable is Ownable {
     require(_level >= 0 && _level <= maxLevel);
 
     uint i;
-    if (_level > 0) {
-      bool alreadyIndexed = false;
-      for (i = 0; i < __authorized.length; i++) {
-        if (__authorized[i] == _address) {
-          alreadyIndexed = true;
-          break;
-        }
-      }
-      if (alreadyIndexed == false) {
-        bool emptyFound = false;
-        // before we try to reuse an empty element of the array
+    if (_level > 0 && authorized[_address] != _level) {
+        bool alreadyIndexed = false;
         for (i = 0; i < __authorized.length; i++) {
-          if (__authorized[i] == 0) {
-            __authorized[i] = _address;
-            emptyFound = true;
+          if (__authorized[i] == _address) {
+            alreadyIndexed = true;
             break;
           }
         }
-        if (emptyFound == false) {
-          __authorized.push(_address);
+        if (alreadyIndexed == false) {
+          bool emptyFound = false;
+          // before we try to reuse an empty element of the array
+          for (i = 0; i < __authorized.length; i++) {
+            if (__authorized[i] == 0) {
+              __authorized[i] = _address;
+              emptyFound = true;
+              break;
+            }
+          }
+          if (emptyFound == false) {
+            __authorized.push(_address);
+          }
+          totalAuthorized++;
         }
-        totalAuthorized++;
-      }
-      AuthorizedAdded(msg.sender, _address, _level);
-      authorized[_address] = _level;
-    } else {
+        AuthorizedAdded(msg.sender, _address, _level);
+        authorized[_address] = _level;
+    } else if (_level == 0 && authorized[_address] > 0) {
       for (i = 0; i < __authorized.length; i++) {
         if (__authorized[i] == _address) {
           __authorized[i] = address(0);
           totalAuthorized--;
+          AuthorizedRemoved(msg.sender, _address);
+          delete authorized[_address];
           break;
         }
       }
-      AuthorizedRemoved(msg.sender, _address);
-      delete authorized[_address];
     }
   }
 
@@ -255,7 +281,7 @@ contract Authorizable is Ownable {
   /**
    * @dev Allows any authorizer to get the list of the authorized wallets
    */
-  function getAuthorized() external onlyAuthorizer constant returns(address[]) {
+  function getAuthorized() external onlyAuthorizer constant returns (address[]) {
     return __authorized;
   }
 
