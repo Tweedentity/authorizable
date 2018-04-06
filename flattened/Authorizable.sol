@@ -214,7 +214,7 @@ contract Authorizable is Ownable {
    */
   function __authorize(address _address, uint _level) internal {
     require(_address != address(0));
-    require(_level >= 0 && _level <= maxLevel);
+    require(_level <= maxLevel);
 
     uint i;
     if (_level > 0 && authorized[_address] != _level) {
