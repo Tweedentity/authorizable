@@ -50,7 +50,7 @@ contract Ownable {
  * @dev The Authorizable contract provides governance.
  */
 
-contract Authorizable is Ownable {
+contract Authorizable /** 0.1.5 */ is Ownable {
 
   uint public totalAuthorized;
 
@@ -65,6 +65,7 @@ contract Authorizable is Ownable {
   uint public authorizerLevel = 56;
 
   bool public selfRevoke = true;
+  mapping (uint => bool) public selfRevokeException;
 
   /**
    * @dev Set the range of levels accepted by the contract
@@ -87,6 +88,15 @@ contract Authorizable is Ownable {
   */
   function setSelfRevoke(bool _selfRevoke) onlyOwner external {
     selfRevoke = _selfRevoke;
+  }
+
+  /**
+  * @dev Allows to set exceptions to selfRevoke when this is true
+  * @param _level The level not allowed to self-revoke
+  * @param _isActive `true` adds the lock, `false` removes it
+  */
+  function addSelfRevokeException(uint _level, bool _isActive) onlyOwner external {
+    selfRevokeException[_level] = _isActive;
   }
 
   /**
@@ -213,7 +223,7 @@ contract Authorizable is Ownable {
    * @dev Allows an authorized to de-authorize itself.
    */
   function deAuthorize() onlyAuthorized external {
-    require(selfRevoke == true);
+    require(selfRevoke == true && selfRevokeException[authorized[msg.sender]] == false);
     __authorize(msg.sender, 0);
   }
 
