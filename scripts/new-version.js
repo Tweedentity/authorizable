@@ -19,7 +19,7 @@ if (index == 0) {
 const newVersion = version.join('.')
 
 pkg.version = newVersion
-fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
+fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n')
 
 const src = './contracts/Authorizable.sol'
 let contract = fs.readFileSync(src, 'utf-8').replace(RegExp(`\\/\\*\\* ${ver} \\*\\/`), `/** ${newVersion} */`)
