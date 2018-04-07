@@ -174,6 +174,20 @@ contract('Authorizable', accounts => {
     assert.equal(await authorizable.authorized(authorizedLevel64), 0)
   })
 
+  it('should add level 1 to selfRevokeExceptions', async () => {
+    await authorizable.addSelfRevokeException(1, true)
+    assert.isTrue(await authorizable.selfRevokeException(1))
+  })
+
+  it('should revert if authorizedLevel1 tries to deAuthorize itself', async () => {
+    await assertRevert(authorizable.deAuthorize({from: authorizedLevel1}))
+  })
+
+  it('should remove level 1 to selfRevokeExceptions', async () => {
+    await authorizable.addSelfRevokeException(1, false)
+    assert.isFalse(await authorizable.selfRevokeException(1))
+  })
+
   it('should allow authorizedLevel1 to deAuthorize itself', async () => {
     await authorizable.deAuthorize({from: authorizedLevel1})
     assert.equal(await authorizable.authorized(authorizedLevel1), 0)
