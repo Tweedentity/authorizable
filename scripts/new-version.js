@@ -21,8 +21,12 @@ const newVersion = vals.join('.')
 pkg.version = newVersion
 fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n')
 
-const src = './contracts/Authorizable.sol'
+let src = './contracts/Authorizable.sol'
 let contract = fs.readFileSync(src, 'utf-8').replace(RegExp(`\\/\\*\\* ${oldVersion} \\*\\/`), `/** ${newVersion} */`)
+fs.writeFileSync(src, contract)
+
+src = './contracts/AuthorizableLite.sol'
+contract = fs.readFileSync(src, 'utf-8').replace(RegExp(`\\/\\*\\* ${oldVersion} \\*\\/`), `/** ${newVersion} */`)
 fs.writeFileSync(src, contract)
 
 console.log('New version', newVersion)

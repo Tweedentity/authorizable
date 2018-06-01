@@ -50,7 +50,7 @@ contract Ownable {
  * @dev The Authorizable contract provides governance.
  */
 
-contract Authorizable /** 0.1.6 */ is Ownable {
+contract Authorizable /** 0.1.8 */ is Ownable {
 
   uint public totalAuthorized;
 

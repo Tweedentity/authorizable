@@ -1,14 +1,56 @@
 pragma solidity ^0.4.18;
 
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+// File: zeppelin-solidity/contracts/ownership/Ownable.sol
 
 /**
- * @title Authorizable
+ * @title Ownable
+ * @dev The Ownable contract has an owner address, and provides basic authorization control
+ * functions, this simplifies the implementation of "user permissions".
+ */
+contract Ownable {
+  address public owner;
+
+
+  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+
+  /**
+   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
+   * account.
+   */
+  function Ownable() public {
+    owner = msg.sender;
+  }
+
+  /**
+   * @dev Throws if called by any account other than the owner.
+   */
+  modifier onlyOwner() {
+    require(msg.sender == owner);
+    _;
+  }
+
+  /**
+   * @dev Allows the current owner to transfer control of the contract to a newOwner.
+   * @param newOwner The address to transfer ownership to.
+   */
+  function transferOwnership(address newOwner) public onlyOwner {
+    require(newOwner != address(0));
+    OwnershipTransferred(owner, newOwner);
+    owner = newOwner;
+  }
+
+}
+
+// File: contracts/AuthorizableLite.sol
+
+/**
+ * @title AuthorizableLite
  * @author Francesco Sullo <francesco@sullo.co>
  * @dev The Authorizable contract provides governance.
  */
 
-contract Authorizable /** 0.1.8 */ is Ownable {
+contract AuthorizableLite /** 0.1.8 */ is Ownable {
 
   uint public totalAuthorized;
 
@@ -21,9 +63,6 @@ contract Authorizable /** 0.1.8 */ is Ownable {
 
   uint public maxLevel = 64;
   uint public authorizerLevel = 56;
-
-  bool public selfRevoke = true;
-  mapping (uint => bool) public selfRevokeException;
 
   /**
    * @dev Set the range of levels accepted by the contract
@@ -38,23 +77,6 @@ contract Authorizable /** 0.1.8 */ is Ownable {
 
     maxLevel = _maxLevel;
     authorizerLevel = _authorizerLevel;
-  }
-
-  /**
-  * @dev Allows to decide if users will be able to self revoke their level
-  * @param _selfRevoke The new value
-  */
-  function setSelfRevoke(bool _selfRevoke) onlyOwner external {
-    selfRevoke = _selfRevoke;
-  }
-
-  /**
-  * @dev Allows to set exceptions to selfRevoke when this is true
-  * @param _level The level not allowed to self-revoke
-  * @param _isActive `true` adds the lock, `false` removes it
-  */
-  function addSelfRevokeException(uint _level, bool _isActive) onlyOwner external {
-    selfRevokeException[_level] = _isActive;
   }
 
   /**
@@ -76,27 +98,6 @@ contract Authorizable /** 0.1.8 */ is Ownable {
   }
 
   /**
-   * @dev Throws if called by any account which is not authorized
-   *      at some of the specified levels.
-   * @param _levels Levels required
-   */
-  modifier onlyAuthorizedAtLevels(uint[] _levels) {
-    require(__hasLevel(authorized[msg.sender], _levels));
-    _;
-  }
-
-  /**
-   * @dev Throws if called by any account which has
-   *      a level of authorization not in the interval
-   * @param _minLevel Minimum level required
-   * @param _maxLevel Maximum level required
-   */
-  modifier onlyAuthorizedAtLevelsWithin(uint _minLevel, uint _maxLevel) {
-    require(authorized[msg.sender] >= _minLevel && authorized[msg.sender] <= _maxLevel);
-    _;
-  }
-
-  /**
     * @dev same modifiers above, but including the owner
     */
   modifier onlyOwnerOrAuthorized() {
@@ -106,16 +107,6 @@ contract Authorizable /** 0.1.8 */ is Ownable {
 
   modifier onlyOwnerOrAuthorizedAtLevel(uint _level) {
     require(msg.sender == owner || authorized[msg.sender] == _level);
-    _;
-  }
-
-  modifier onlyOwnerOrAuthorizedAtLevels(uint[] _levels) {
-    require(msg.sender == owner || __hasLevel(authorized[msg.sender], _levels));
-    _;
-  }
-
-  modifier onlyOwnerOrAuthorizedAtLevelsIn(uint _minLevel, uint _maxLevel) {
-    require(msg.sender == owner || (authorized[msg.sender] >= _minLevel && authorized[msg.sender] <= _maxLevel));
     _;
   }
 
@@ -138,50 +129,9 @@ contract Authorizable /** 0.1.8 */ is Ownable {
   }
 
   /**
-    * @dev Allows to add a list of new authorized addresses.
-    *      Useful, for example, with whitelists
-    * @param _addresses Array of addresses to be authorized
-    * @param _level The level of authorization
-    */
-  function authorizeBatch(address[] _addresses, uint _level) onlyAuthorizer external {
-    require(_level > 0);
-    for (uint i = 0; i < _addresses.length; i++) {
-      __authorize(_addresses[i], _level);
-    }
-  }
-
-  /**
-   * @dev Allows to remove all the authorizations. Callable by the owner only.
-   *      We check the gas to avoid going out of gas when there are tons of
-   *      authorized addresses (for example when used for a whitelist).
-   *      If at the end of the operation there are still authorized
-   *      wallets the operation must be repeated.
-   */
-  function deAuthorizeAll() onlyOwner external {
-    for (uint i = 0; i < __authorized.length && msg.gas > 33e3; i++) {
-      if (__authorized[i] != address(0)) {
-        __authorize(__authorized[i], 0);
-      }
-    }
-  }
-
-  /**
-   * @dev Allows to remove all the authorizations at a specific level.
-   * @param _level The level of authorization
-   */
-  function deAuthorizeAllAtLevel(uint _level) onlyAuthorizer external {
-    for (uint i = 0; i < __authorized.length && msg.gas > 33e3; i++) {
-      if (__authorized[i] != address(0) && authorized[__authorized[i]] == _level) {
-        __authorize(__authorized[i], 0);
-      }
-    }
-  }
-
-  /**
    * @dev Allows an authorized to de-authorize itself.
    */
   function deAuthorize() onlyAuthorized external {
-    require(selfRevoke == true && selfRevokeException[authorized[msg.sender]] == false);
     __authorize(msg.sender, 0);
   }
 
