@@ -1,6 +1,6 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.21;
 
-// File: zeppelin-solidity/contracts/ownership/Ownable.sol
+// File: openzeppelin-solidity/contracts/ownership/Ownable.sol
 
 /**
  * @title Ownable
@@ -36,7 +36,7 @@ contract Ownable {
    */
   function transferOwnership(address newOwner) public onlyOwner {
     require(newOwner != address(0));
-    OwnershipTransferred(owner, newOwner);
+    emit OwnershipTransferred(owner, newOwner);
     owner = newOwner;
   }
 
@@ -50,7 +50,7 @@ contract Ownable {
  * @dev The Authorizable contract provides governance.
  */
 
-contract AuthorizableLite /** 0.1.8 */ is Ownable {
+contract AuthorizableLite /** 0.1.9 */ is Ownable {
 
   uint public totalAuthorized;
 

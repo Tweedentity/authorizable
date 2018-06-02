@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
 /**
  * @title Authorizable
@@ -8,7 +8,7 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
  * @dev The Authorizable contract provides governance.
  */
 
-contract Authorizable /** 0.1.8 */ is Ownable {
+contract Authorizable /** 0.1.9 */ is Ownable {
 
   uint public totalAuthorized;
 
