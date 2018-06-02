@@ -1,6 +1,6 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
-// File: openzeppelin-solidity/contracts/ownership/Ownable.sol
+// File: contracts/Ownable.sol
 
 /**
  * @title Ownable
@@ -11,14 +11,18 @@ contract Ownable {
   address public owner;
 
 
-  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+  event OwnershipRenounced(address indexed previousOwner);
+  event OwnershipTransferred(
+    address indexed previousOwner,
+    address indexed newOwner
+  );
 
 
   /**
    * @dev The Ownable constructor sets the original `owner` of the contract to the sender
    * account.
    */
-  function Ownable() public {
+  constructor() public {
     owner = msg.sender;
   }
 
@@ -40,6 +44,13 @@ contract Ownable {
     owner = newOwner;
   }
 
+  /**
+   * @dev Allows the current owner to relinquish control of the contract.
+   */
+  function renounceOwnership() public onlyOwner {
+    emit OwnershipRenounced(owner);
+    owner = address(0);
+  }
 }
 
 // File: contracts/Authorizable.sol
@@ -200,7 +211,7 @@ contract Authorizable /** 0.1.9 */ is Ownable {
    *      wallets the operation must be repeated.
    */
   function deAuthorizeAll() onlyOwner external {
-    for (uint i = 0; i < __authorized.length && msg.gas > 33e3; i++) {
+    for (uint i = 0; i < __authorized.length && gasleft() > 33e3; i++) {
       if (__authorized[i] != address(0)) {
         __authorize(__authorized[i], 0);
       }
@@ -212,7 +223,7 @@ contract Authorizable /** 0.1.9 */ is Ownable {
    * @param _level The level of authorization
    */
   function deAuthorizeAllAtLevel(uint _level) onlyAuthorizer external {
-    for (uint i = 0; i < __authorized.length && msg.gas > 33e3; i++) {
+    for (uint i = 0; i < __authorized.length && gasleft() > 33e3; i++) {
       if (__authorized[i] != address(0) && authorized[__authorized[i]] == _level) {
         __authorize(__authorized[i], 0);
       }

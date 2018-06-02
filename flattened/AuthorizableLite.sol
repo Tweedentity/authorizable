@@ -1,6 +1,6 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
-// File: openzeppelin-solidity/contracts/ownership/Ownable.sol
+// File: contracts/Ownable.sol
 
 /**
  * @title Ownable
@@ -11,14 +11,18 @@ contract Ownable {
   address public owner;
 
 
-  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+  event OwnershipRenounced(address indexed previousOwner);
+  event OwnershipTransferred(
+    address indexed previousOwner,
+    address indexed newOwner
+  );
 
 
   /**
    * @dev The Ownable constructor sets the original `owner` of the contract to the sender
    * account.
    */
-  function Ownable() public {
+  constructor() public {
     owner = msg.sender;
   }
 
@@ -40,6 +44,13 @@ contract Ownable {
     owner = newOwner;
   }
 
+  /**
+   * @dev Allows the current owner to relinquish control of the contract.
+   */
+  function renounceOwnership() public onlyOwner {
+    emit OwnershipRenounced(owner);
+    owner = address(0);
+  }
 }
 
 // File: contracts/AuthorizableLite.sol
@@ -169,14 +180,14 @@ contract AuthorizableLite /** 0.1.9 */ is Ownable {
           }
           totalAuthorized++;
         }
-        AuthorizedAdded(msg.sender, _address, _level);
+        emit AuthorizedAdded(msg.sender, _address, _level);
         authorized[_address] = _level;
     } else if (_level == 0 && authorized[_address] > 0) {
       for (i = 0; i < __authorized.length; i++) {
         if (__authorized[i] == _address) {
           __authorized[i] = address(0);
           totalAuthorized--;
-          AuthorizedRemoved(msg.sender, _address);
+          emit AuthorizedRemoved(msg.sender, _address);
           delete authorized[_address];
           break;
         }
