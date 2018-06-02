@@ -1,6 +1,6 @@
 {
   "name": "authorizable",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Smart contract governance made easy",
   "repository": {
     "type": "git",
@@ -10,11 +10,11 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "openzeppelin-solidity": "1.9.0",
+    "openzeppelin-solidity": "^1.8.0",
     "truffle-flattener": "^1.2.5"
   },
   "scripts": {
-    "flatten": "truffle-flattener contracts/Authorizable.sol > flattened/Authorizable.sol && truffle-flattener contracts/AuthorizableLite.sol > flattened/AuthorizableLite.sol",
+    "flatten": "scripts/flatten.sh",
     "new-version": "scripts/new-version.sh"
   }
 }
