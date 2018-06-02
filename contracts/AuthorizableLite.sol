@@ -1,6 +1,6 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.4.18;
 
-import './Ownable.sol';
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
 /**
  * @title AuthorizableLite
@@ -8,7 +8,7 @@ import './Ownable.sol';
  * @dev The Authorizable contract provides governance.
  */
 
-contract AuthorizableLite /** 0.1.10 */ is Ownable {
+contract AuthorizableLite /** 0.1.9 */ is Ownable {
 
   uint public totalAuthorized;
 
@@ -127,14 +127,14 @@ contract AuthorizableLite /** 0.1.10 */ is Ownable {
           }
           totalAuthorized++;
         }
-        emit AuthorizedAdded(msg.sender, _address, _level);
+        AuthorizedAdded(msg.sender, _address, _level);
         authorized[_address] = _level;
     } else if (_level == 0 && authorized[_address] > 0) {
       for (i = 0; i < __authorized.length; i++) {
         if (__authorized[i] == _address) {
           __authorized[i] = address(0);
           totalAuthorized--;
-          emit AuthorizedRemoved(msg.sender, _address);
+          AuthorizedRemoved(msg.sender, _address);
           delete authorized[_address];
           break;
         }
