@@ -1,6 +1,6 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
-import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './Ownable.sol';
 
 /**
  * @title AuthorizableLite
@@ -127,14 +127,14 @@ contract AuthorizableLite /** 0.1.9 */ is Ownable {
           }
           totalAuthorized++;
         }
-        AuthorizedAdded(msg.sender, _address, _level);
+        emit AuthorizedAdded(msg.sender, _address, _level);
         authorized[_address] = _level;
     } else if (_level == 0 && authorized[_address] > 0) {
       for (i = 0; i < __authorized.length; i++) {
         if (__authorized[i] == _address) {
           __authorized[i] = address(0);
           totalAuthorized--;
-          AuthorizedRemoved(msg.sender, _address);
+          emit AuthorizedRemoved(msg.sender, _address);
           delete authorized[_address];
           break;
         }
