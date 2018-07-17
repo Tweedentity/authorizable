@@ -2,7 +2,6 @@
 
 contracts=(
 "Authorizable"
-"AuthorizableLite"
 )
 
 for c in "${contracts[@]}"
