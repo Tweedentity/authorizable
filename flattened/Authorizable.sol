@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
 // File: openzeppelin-solidity/contracts/ownership/Ownable.sol
 
@@ -11,14 +11,18 @@ contract Ownable {
   address public owner;
 
 
-  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+  event OwnershipRenounced(address indexed previousOwner);
+  event OwnershipTransferred(
+    address indexed previousOwner,
+    address indexed newOwner
+  );
 
 
   /**
    * @dev The Ownable constructor sets the original `owner` of the contract to the sender
    * account.
    */
-  function Ownable() public {
+  constructor() public {
     owner = msg.sender;
   }
 
@@ -31,15 +35,33 @@ contract Ownable {
   }
 
   /**
-   * @dev Allows the current owner to transfer control of the contract to a newOwner.
-   * @param newOwner The address to transfer ownership to.
+   * @dev Allows the current owner to relinquish control of the contract.
+   * @notice Renouncing to ownership will leave the contract without an owner.
+   * It will not be possible to call the functions with the `onlyOwner`
+   * modifier anymore.
    */
-  function transferOwnership(address newOwner) public onlyOwner {
-    require(newOwner != address(0));
-    OwnershipTransferred(owner, newOwner);
-    owner = newOwner;
+  function renounceOwnership() public onlyOwner {
+    emit OwnershipRenounced(owner);
+    owner = address(0);
   }
 
+  /**
+   * @dev Allows the current owner to transfer control of the contract to a newOwner.
+   * @param _newOwner The address to transfer ownership to.
+   */
+  function transferOwnership(address _newOwner) public onlyOwner {
+    _transferOwnership(_newOwner);
+  }
+
+  /**
+   * @dev Transfers control of the contract to a newOwner.
+   * @param _newOwner The address to transfer ownership to.
+   */
+  function _transferOwnership(address _newOwner) internal {
+    require(_newOwner != address(0));
+    emit OwnershipTransferred(owner, _newOwner);
+    owner = _newOwner;
+  }
 }
 
 // File: contracts/Authorizable.sol
@@ -200,7 +222,7 @@ contract Authorizable /** 0.1.9 */ is Ownable {
    *      wallets the operation must be repeated.
    */
   function deAuthorizeAll() onlyOwner external {
-    for (uint i = 0; i < __authorized.length && msg.gas > 33e3; i++) {
+    for (uint i = 0; i < __authorized.length && gasleft() > 33e3; i++) {
       if (__authorized[i] != address(0)) {
         __authorize(__authorized[i], 0);
       }
@@ -212,7 +234,7 @@ contract Authorizable /** 0.1.9 */ is Ownable {
    * @param _level The level of authorization
    */
   function deAuthorizeAllAtLevel(uint _level) onlyAuthorizer external {
-    for (uint i = 0; i < __authorized.length && msg.gas > 33e3; i++) {
+    for (uint i = 0; i < __authorized.length && gasleft() > 33e3; i++) {
       if (__authorized[i] != address(0) && authorized[__authorized[i]] == _level) {
         __authorize(__authorized[i], 0);
       }
@@ -261,14 +283,14 @@ contract Authorizable /** 0.1.9 */ is Ownable {
           }
           totalAuthorized++;
         }
-        AuthorizedAdded(msg.sender, _address, _level);
+        emit AuthorizedAdded(msg.sender, _address, _level);
         authorized[_address] = _level;
     } else if (_level == 0 && authorized[_address] > 0) {
       for (i = 0; i < __authorized.length; i++) {
         if (__authorized[i] == _address) {
           __authorized[i] = address(0);
           totalAuthorized--;
-          AuthorizedRemoved(msg.sender, _address);
+          emit AuthorizedRemoved(msg.sender, _address);
           delete authorized[_address];
           break;
         }

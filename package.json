@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "openzeppelin-solidity": "^1.8.0",
+    "openzeppelin-solidity": "^1.11.0",
     "truffle-flattener": "^1.2.5"
   },
   "scripts": {
