@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "node-growl": "^0.1.1",
     "openzeppelin-solidity": "^1.11.0",
     "truffle-flattener": "^1.2.5"
   },
