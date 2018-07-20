@@ -1,6 +1,6 @@
 {
   "name": "authorizable",
-  "version": "0.1.13",
+  "version": "0.2.0",
   "description": "Smart contract governance made easy",
   "repository": {
     "type": "git",
